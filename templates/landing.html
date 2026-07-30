@@ -96,4 +96,49 @@
     </div>
 </section>
 
+<div id="how-it-works-modal" class="modal-overlay" hidden>
+    <div class="modal-box">
+        <button type="button" id="how-it-works-close" class="modal-close" aria-label="Close video">&times;</button>
+        <div class="modal-video-wrap">
+            <iframe id="how-it-works-iframe"
+                src="about:blank"
+                title="See how Spendly works"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
+
+        var openBtn = document.getElementById("how-it-works-btn");
+        var closeBtn = document.getElementById("how-it-works-close");
+        var overlay = document.getElementById("how-it-works-modal");
+        var iframe = document.getElementById("how-it-works-iframe");
+
+        function openModal() {
+            iframe.src = YOUTUBE_EMBED_URL;
+            overlay.hidden = false;
+        }
+
+        function closeModal() {
+            overlay.hidden = true;
+            iframe.src = "about:blank";
+        }
+
+        openBtn.addEventListener("click", openModal);
+        closeBtn.addEventListener("click", closeModal);
+        overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+                closeModal();
+            }
+        });
+    })();
+</script>
 {% endblock %}
