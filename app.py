@@ -21,7 +21,7 @@ def landing():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if session.get("user_id"):
-        return redirect(url_for("landing"))
+        return redirect(url_for("profile"))
 
     if request.method == "GET":
         return render_template("register.html")
@@ -52,7 +52,7 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if session.get("user_id"):
-        return redirect(url_for("landing"))
+        return redirect(url_for("profile"))
 
     if request.method == "GET":
         return render_template("login.html")
@@ -67,7 +67,8 @@ def login():
         return render_template("login.html")
 
     session["user_id"] = user["id"]
-    return redirect(url_for("landing"))
+    session["user_name"] = user["name"]
+    return redirect(url_for("profile"))
 
 
 @app.route("/terms")
@@ -90,9 +91,49 @@ def logout():
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
 
+# Static demo data for the profile page (Step 4) — replaced with real queries in Step 5
+PROFILE_USER = {
+    "name": "Nitish Kumar",
+    "email": "nitish@example.com",
+    "initials": "NK",
+    "member_since": "March 2026",
+}
+
+PROFILE_STATS = [
+    {"label": "Total Spent", "value": "₹18,240", "icon": "wallet"},
+    {"label": "Transactions", "value": "42", "icon": "receipt"},
+    {"label": "Top Category", "value": "Food", "icon": "tag"},
+]
+
+PROFILE_TRANSACTIONS = [
+    {"date": "Jul 28, 2026", "description": "Grocery shopping", "category": "Food", "category_class": "profile-badge-food", "amount": "₹1,240.00"},
+    {"date": "Jul 25, 2026", "description": "Uber ride to office", "category": "Transport", "category_class": "profile-badge-transport", "amount": "₹350.00"},
+    {"date": "Jul 20, 2026", "description": "Electricity bill", "category": "Bills", "category_class": "profile-badge-bills", "amount": "₹2,150.00"},
+    {"date": "Jul 18, 2026", "description": "Movie night", "category": "Entertainment", "category_class": "profile-badge-entertainment", "amount": "₹680.00"},
+    {"date": "Jul 12, 2026", "description": "Pharmacy purchase", "category": "Health", "category_class": "profile-badge-health", "amount": "₹920.00"},
+]
+
+PROFILE_CATEGORIES = [
+    {"name": "Food", "amount": "₹6,384", "bar_class": "profile-bar-w-35", "color_class": "profile-progress-bar-food"},
+    {"name": "Bills", "amount": "₹4,560", "bar_class": "profile-bar-w-25", "color_class": "profile-progress-bar-bills"},
+    {"name": "Transport", "amount": "₹3,648", "bar_class": "profile-bar-w-20", "color_class": "profile-progress-bar-transport"},
+    {"name": "Entertainment", "amount": "₹1,824", "bar_class": "profile-bar-w-10", "color_class": "profile-progress-bar-entertainment"},
+    {"name": "Health", "amount": "₹1,824", "bar_class": "profile-bar-w-10", "color_class": "profile-progress-bar-health"},
+]
+
+
 @app.route("/profile")
 def profile():
-    return "Profile page — coming in Step 4"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    return render_template(
+        "profile.html",
+        user=PROFILE_USER,
+        stats=PROFILE_STATS,
+        transactions=PROFILE_TRANSACTIONS,
+        categories=PROFILE_CATEGORIES,
+    )
 
 
 @app.route("/expenses/add")

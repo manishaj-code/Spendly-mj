@@ -21,6 +21,21 @@
     --border: #e4e1da;
     --border-soft: #eeebe4;
 
+    --cat-food: var(--accent-2);
+    --cat-food-light: var(--accent-2-light);
+    --cat-other: var(--ink-muted);
+    --cat-other-light: var(--border-soft);
+    --cat-transport: #4f7fd6;
+    --cat-transport-light: #eaf1fc;
+    --cat-bills: #7b5fc7;
+    --cat-bills-light: #f1edfb;
+    --cat-health: #2a9d8f;
+    --cat-health-light: #e6f5f3;
+    --cat-entertainment: #d6486f;
+    --cat-entertainment-light: #fbe8ee;
+    --cat-shopping: #b08d57;
+    --cat-shopping-light: #f5efe6;
+
     --font-display: 'DM Serif Display', Georgia, serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
 
@@ -104,6 +119,8 @@ a { color: inherit; text-decoration: none; }
 
 .nav-links a { color: var(--ink-muted); transition: color 0.2s; }
 .nav-links a:hover { color: var(--ink); }
+
+.nav-username { color: var(--ink-soft); font-weight: 500; }
 
 .nav-cta {
     background: var(--ink) !important;
@@ -698,5 +715,6 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 600px) {
     .nav-links a:not(.nav-cta) { display: none; }
+    .nav-username { display: none; }
     .hero { padding: 3rem 1rem 2rem; }
 }
