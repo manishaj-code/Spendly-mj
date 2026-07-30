@@ -34,45 +34,49 @@
         </div>
     </section>
 
-    <section class="profile-section">
-        <h2 class="profile-section-title"><i data-lucide="receipt"></i>Recent Transactions</h2>
-        <div class="profile-table-wrap">
-            <table class="profile-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th class="profile-table-amount">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for txn in transactions %}
-                    <tr>
-                        <td>{{ txn.date }}</td>
-                        <td>{{ txn.description }}</td>
-                        <td><span class="profile-badge {{ txn.category_class }}">{{ txn.category }}</span></td>
-                        <td class="profile-table-amount">{{ txn.amount }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
+    <section class="profile-section profile-panels">
 
-    <section class="profile-section">
-        <h2 class="profile-section-title"><i data-lucide="pie-chart"></i>Category Breakdown</h2>
-        <div class="profile-progress-card">
-            {% for cat in categories %}
-            <div class="profile-progress-row">
-                <span class="profile-progress-label">{{ cat.name }}</span>
-                <div class="profile-progress-track">
-                    <div class="profile-progress-bar {{ cat.color_class }} {{ cat.bar_class }}"></div>
-                </div>
-                <span class="profile-progress-amount">{{ cat.amount }}</span>
+        <div class="profile-panel">
+            <h2 class="profile-section-title"><i data-lucide="receipt"></i>Recent Transactions</h2>
+            <div class="profile-table-wrap">
+                <table class="profile-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th class="profile-table-amount">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in transactions %}
+                        <tr>
+                            <td>{{ txn.date }}</td>
+                            <td>{{ txn.description }}</td>
+                            <td><span class="profile-badge {{ txn.category_class }}">{{ txn.category }}</span></td>
+                            <td class="profile-table-amount">{{ txn.amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            {% endfor %}
         </div>
+
+        <div class="profile-panel profile-panel-side">
+            <h2 class="profile-section-title"><i data-lucide="pie-chart"></i>Category Breakdown</h2>
+            <div class="profile-progress-card">
+                {% for cat in categories %}
+                <div class="profile-progress-row">
+                    <span class="profile-progress-label">{{ cat.name }}</span>
+                    <div class="profile-progress-track">
+                        <div class="profile-progress-bar {{ cat.color_class }} {{ cat.bar_class }}"></div>
+                    </div>
+                    <span class="profile-progress-amount">{{ cat.amount }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
     </section>
 
 </div>

@@ -10,6 +10,15 @@
 
 .profile-section { margin-bottom: 2rem; }
 
+.profile-panels {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    align-items: start;
+    gap: 1.5rem;
+}
+
+.profile-panel { display: flex; flex-direction: column; }
+
 .profile-section-title {
     font-family: var(--font-display);
     font-size: 1.2rem;
@@ -229,6 +238,7 @@
 @media (max-width: 900px) {
     .profile-stats { grid-template-columns: 1fr; }
     .profile-user-card { flex-direction: column; text-align: center; }
+    .profile-panels { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
