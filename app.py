@@ -4,6 +4,12 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from werkzeug.security import check_password_hash
 
 from database.db import create_user, get_db, get_user_by_email, init_db, seed_db
+from database.queries import (
+    get_category_breakdown,
+    get_recent_transactions,
+    get_summary_stats,
+    get_user_by_id,
+)
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"  # TODO: replace with a real secret before production
@@ -91,35 +97,78 @@ def logout():
 # Placeholder routes — students will implement these                  #
 # ------------------------------------------------------------------ #
 
-# Static demo data for the profile page (Step 4) — replaced with real queries in Step 5
-PROFILE_USER = {
-    "name": "Nitish Kumar",
-    "email": "nitish@example.com",
-    "initials": "NK",
-    "member_since": "March 2026",
-}
+def format_currency(amount):
+    return f"₹{amount:,.2f}"
 
-PROFILE_STATS = [
-    {"label": "Total Spent", "value": "₹18,240", "icon": "wallet"},
-    {"label": "Transactions", "value": "42", "icon": "receipt"},
-    {"label": "Top Category", "value": "Food", "icon": "tag"},
-]
 
-PROFILE_TRANSACTIONS = [
-    {"date": "Jul 28, 2026", "description": "Grocery shopping", "category": "Food", "category_class": "profile-badge-food", "amount": "₹1,240.00"},
-    {"date": "Jul 25, 2026", "description": "Uber ride to office", "category": "Transport", "category_class": "profile-badge-transport", "amount": "₹350.00"},
-    {"date": "Jul 20, 2026", "description": "Electricity bill", "category": "Bills", "category_class": "profile-badge-bills", "amount": "₹2,150.00"},
-    {"date": "Jul 18, 2026", "description": "Movie night", "category": "Entertainment", "category_class": "profile-badge-entertainment", "amount": "₹680.00"},
-    {"date": "Jul 12, 2026", "description": "Pharmacy purchase", "category": "Health", "category_class": "profile-badge-health", "amount": "₹920.00"},
-]
+# --- Subagent 2 begin (user info) --- #
+def _build_profile_user(user_id):
+    data = get_user_by_id(user_id)
+    if data is None:
+        return {"name": "", "email": "", "initials": "", "member_since": ""}
 
-PROFILE_CATEGORIES = [
-    {"name": "Food", "amount": "₹6,384", "bar_class": "profile-bar-w-35", "color_class": "profile-progress-bar-food"},
-    {"name": "Bills", "amount": "₹4,560", "bar_class": "profile-bar-w-25", "color_class": "profile-progress-bar-bills"},
-    {"name": "Transport", "amount": "₹3,648", "bar_class": "profile-bar-w-20", "color_class": "profile-progress-bar-transport"},
-    {"name": "Entertainment", "amount": "₹1,824", "bar_class": "profile-bar-w-10", "color_class": "profile-progress-bar-entertainment"},
-    {"name": "Health", "amount": "₹1,824", "bar_class": "profile-bar-w-10", "color_class": "profile-progress-bar-health"},
-]
+    parts = data["name"].split()
+    if len(parts) >= 2:
+        initials = (parts[0][0] + parts[-1][0]).upper()
+    elif parts:
+        initials = parts[0][:2].upper()
+    else:
+        initials = ""
+
+    return {
+        "name": data["name"],
+        "email": data["email"],
+        "initials": initials,
+        "member_since": data["member_since"],
+    }
+# --- Subagent 2 end --- #
+
+
+# --- Subagent 2 begin (summary stats) --- #
+def _build_profile_stats(user_id):
+    stats = get_summary_stats(user_id)
+    return [
+        {"label": "Total Spent", "value": format_currency(stats["total_spent"]), "icon": "wallet"},
+        {"label": "Transactions", "value": str(stats["transaction_count"]), "icon": "receipt"},
+        {"label": "Top Category", "value": stats["top_category"], "icon": "tag"},
+    ]
+# --- Subagent 2 end --- #
+
+
+# --- Subagent 1 begin (transactions) --- #
+def _build_profile_transactions(user_id):
+    transactions = get_recent_transactions(user_id, limit=10)
+    return [
+        {
+            "date": t["date"],
+            "description": t["description"],
+            "category": t["category"],
+            "category_class": f"profile-badge-{t['category'].lower()}",
+            "amount": format_currency(t["amount"]),
+        }
+        for t in transactions
+    ]
+# --- Subagent 1 end --- #
+
+
+# --- Subagent 3 begin (categories) --- #
+def _pct_to_bar_class(pct):
+    stepped = max(5, min(100, round(pct / 5) * 5))
+    return f"profile-bar-w-{stepped}"
+
+
+def _build_profile_categories(user_id):
+    breakdown = get_category_breakdown(user_id)
+    return [
+        {
+            "name": c["name"],
+            "amount": format_currency(c["amount"]),
+            "color_class": f"profile-progress-bar-{c['name'].lower()}",
+            "bar_class": _pct_to_bar_class(c["pct"]),
+        }
+        for c in breakdown
+    ]
+# --- Subagent 3 end --- #
 
 
 @app.route("/profile")
@@ -127,12 +176,13 @@ def profile():
     if not session.get("user_id"):
         return redirect(url_for("login"))
 
+    user_id = session["user_id"]
     return render_template(
         "profile.html",
-        user=PROFILE_USER,
-        stats=PROFILE_STATS,
-        transactions=PROFILE_TRANSACTIONS,
-        categories=PROFILE_CATEGORIES,
+        user=_build_profile_user(user_id),
+        stats=_build_profile_stats(user_id),
+        transactions=_build_profile_transactions(user_id),
+        categories=_build_profile_categories(user_id),
     )
 
 
