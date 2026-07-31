@@ -5,6 +5,15 @@ from datetime import datetime
 from database.db import get_db
 
 
+def _date_range_clause(date_from, date_to):
+    # date_clause is always one of these two fixed literals — never built
+    # from date_from/date_to — so the actual bounds must still be bound via
+    # the returned params list, never interpolated into the query string.
+    if date_from is None or date_to is None:
+        return "", []
+    return " AND date BETWEEN ? AND ?", [date_from, date_to]
+
+
 # --- Subagent 2 begin --- #
 def get_user_by_id(user_id):
     conn = get_db()
@@ -30,13 +39,16 @@ def get_user_by_id(user_id):
 
 
 # --- Subagent 2 begin --- #
-def get_summary_stats(user_id):
+def get_summary_stats(user_id, date_from=None, date_to=None):
     conn = get_db()
     try:
+        date_clause, date_params = _date_range_clause(date_from, date_to)
+        params = [user_id, *date_params]
+
         row = conn.execute(
             "SELECT COALESCE(SUM(amount), 0) AS total, COUNT(*) AS cnt "
-            "FROM expenses WHERE user_id = ?",
-            (user_id,),
+            f"FROM expenses WHERE user_id = ?{date_clause}",
+            params,
         ).fetchone()
 
         total_spent = round(float(row["total"]), 2)
@@ -46,9 +58,9 @@ def get_summary_stats(user_id):
             top_category = "—"
         else:
             top_row = conn.execute(
-                "SELECT category FROM expenses WHERE user_id = ? "
+                f"SELECT category FROM expenses WHERE user_id = ?{date_clause} "
                 "GROUP BY category ORDER BY SUM(amount) DESC, category ASC LIMIT 1",
-                (user_id,),
+                params,
             ).fetchone()
             top_category = top_row["category"]
     finally:
@@ -63,13 +75,16 @@ def get_summary_stats(user_id):
 
 
 # --- Subagent 1 begin --- #
-def get_recent_transactions(user_id, limit=10):
+def get_recent_transactions(user_id, limit=10, date_from=None, date_to=None):
     conn = get_db()
     try:
+        date_clause, date_params = _date_range_clause(date_from, date_to)
+        params = [user_id, *date_params, limit]
+
         rows = conn.execute(
             "SELECT date, description, category, amount FROM expenses "
-            "WHERE user_id = ? ORDER BY date DESC, id DESC LIMIT ?",
-            (user_id, limit),
+            f"WHERE user_id = ?{date_clause} ORDER BY date DESC, id DESC LIMIT ?",
+            params,
         ).fetchall()
     finally:
         conn.close()
@@ -89,13 +104,16 @@ def get_recent_transactions(user_id, limit=10):
 
 
 # --- Subagent 3 begin --- #
-def get_category_breakdown(user_id):
+def get_category_breakdown(user_id, date_from=None, date_to=None):
     conn = get_db()
     try:
+        date_clause, date_params = _date_range_clause(date_from, date_to)
+        params = [user_id, *date_params]
+
         rows = conn.execute(
             "SELECT category, SUM(amount) AS total FROM expenses "
-            "WHERE user_id = ? GROUP BY category ORDER BY total DESC, category ASC",
-            (user_id,),
+            f"WHERE user_id = ?{date_clause} GROUP BY category ORDER BY total DESC, category ASC",
+            params,
         ).fetchall()
     finally:
         conn.close()

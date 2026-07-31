@@ -1,4 +1,6 @@
+import calendar
 import sqlite3
+from datetime import date, datetime
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
@@ -101,6 +103,100 @@ def format_currency(amount):
     return f"₹{amount:,.2f}"
 
 
+def _parse_date_arg(value):
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _resolve_date_filter():
+    date_from = _parse_date_arg(request.args.get("date_from"))
+    date_to = _parse_date_arg(request.args.get("date_to"))
+
+    if date_from is None or date_to is None:
+        return None, None
+
+    if date_from > date_to:
+        flash("Start date must be before end date.", "error")
+        return None, None
+
+    return date_from.isoformat(), date_to.isoformat()
+
+
+def _shift_months(d, months):
+    # Shift d back by `months` calendar months, clamping the day-of-month
+    # to the last valid day of the target month (e.g. Mar 31 - 1mo -> Feb 28/29).
+    total = d.month - 1 - months
+    year = d.year + total // 12
+    month = total % 12 + 1
+    last_day = calendar.monthrange(year, month)[1]
+    return date(year, month, min(d.day, last_day))
+
+
+def _date_presets():
+    today = date.today()
+    today_str = today.isoformat()
+    return [
+        {
+            "key": "this_month",
+            "label": "This Month",
+            "date_from": today.replace(day=1).isoformat(),
+            "date_to": today_str,
+        },
+        {
+            "key": "last_3_months",
+            "label": "Last 3 Months",
+            "date_from": _shift_months(today, 3).isoformat(),
+            "date_to": today_str,
+        },
+        {
+            "key": "last_6_months",
+            "label": "Last 6 Months",
+            "date_from": _shift_months(today, 6).isoformat(),
+            "date_to": today_str,
+        },
+        {"key": "all_time", "label": "All Time", "date_from": None, "date_to": None},
+    ]
+
+
+def _preset_url(preset):
+    params = {}
+    if preset["date_from"] is not None:
+        params["date_from"] = preset["date_from"]
+    if preset["date_to"] is not None:
+        params["date_to"] = preset["date_to"]
+    return url_for("profile", **params)
+
+
+def _build_filter_context(date_from, date_to):
+    presets = _date_presets()
+    active_preset = None
+    preset_links = []
+    for preset in presets:
+        is_active = date_from == preset["date_from"] and date_to == preset["date_to"]
+        if is_active:
+            active_preset = preset["key"]
+        preset_links.append(
+            {
+                "key": preset["key"],
+                "label": preset["label"],
+                "url": _preset_url(preset),
+                "active": is_active,
+            }
+        )
+
+    return {
+        "presets": preset_links,
+        "active_preset": active_preset,
+        "is_custom": bool(date_from and date_to) and active_preset is None,
+        "date_from": date_from or "",
+        "date_to": date_to or "",
+    }
+
+
 # --- Subagent 2 begin (user info) --- #
 def _build_profile_user(user_id):
     data = get_user_by_id(user_id)
@@ -125,8 +221,8 @@ def _build_profile_user(user_id):
 
 
 # --- Subagent 2 begin (summary stats) --- #
-def _build_profile_stats(user_id):
-    stats = get_summary_stats(user_id)
+def _build_profile_stats(user_id, date_from=None, date_to=None):
+    stats = get_summary_stats(user_id, date_from=date_from, date_to=date_to)
     return [
         {"label": "Total Spent", "value": format_currency(stats["total_spent"]), "icon": "wallet"},
         {"label": "Transactions", "value": str(stats["transaction_count"]), "icon": "receipt"},
@@ -136,8 +232,8 @@ def _build_profile_stats(user_id):
 
 
 # --- Subagent 1 begin (transactions) --- #
-def _build_profile_transactions(user_id):
-    transactions = get_recent_transactions(user_id, limit=10)
+def _build_profile_transactions(user_id, date_from=None, date_to=None):
+    transactions = get_recent_transactions(user_id, limit=10, date_from=date_from, date_to=date_to)
     return [
         {
             "date": t["date"],
@@ -157,8 +253,8 @@ def _pct_to_bar_class(pct):
     return f"profile-bar-w-{stepped}"
 
 
-def _build_profile_categories(user_id):
-    breakdown = get_category_breakdown(user_id)
+def _build_profile_categories(user_id, date_from=None, date_to=None):
+    breakdown = get_category_breakdown(user_id, date_from=date_from, date_to=date_to)
     return [
         {
             "name": c["name"],
@@ -177,12 +273,14 @@ def profile():
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
+    date_from, date_to = _resolve_date_filter()
     return render_template(
         "profile.html",
         user=_build_profile_user(user_id),
-        stats=_build_profile_stats(user_id),
-        transactions=_build_profile_transactions(user_id),
-        categories=_build_profile_categories(user_id),
+        stats=_build_profile_stats(user_id, date_from, date_to),
+        transactions=_build_profile_transactions(user_id, date_from, date_to),
+        categories=_build_profile_categories(user_id, date_from, date_to),
+        filter=_build_filter_context(date_from, date_to),
     )
 
 

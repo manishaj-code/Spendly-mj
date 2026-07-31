@@ -19,6 +19,93 @@
 
 .profile-panel { display: flex; flex-direction: column; }
 
+/* Date filter bar */
+
+.profile-filter-bar {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.profile-filter-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.profile-filter-preset {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.profile-filter-preset:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+}
+
+.profile-filter-preset-active {
+    background: var(--accent-light);
+    border-color: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.profile-filter-custom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 0.4rem;
+    border-radius: var(--radius-sm);
+}
+
+.profile-filter-custom-active {
+    background: var(--accent-light);
+}
+
+.profile-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.profile-filter-field label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+}
+
+.profile-filter-field .form-input {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.85rem;
+}
+
+.profile-filter-apply {
+    padding: 0.55rem 1.25rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+}
+
+@media (max-width: 900px) {
+    .profile-filter-bar { flex-direction: column; align-items: stretch; }
+    .profile-filter-custom { flex-direction: column; align-items: stretch; }
+}
+
 .profile-section-title {
     font-family: var(--font-display);
     font-size: 1.2rem;
