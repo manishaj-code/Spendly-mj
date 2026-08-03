@@ -122,8 +122,6 @@ a { color: inherit; text-decoration: none; }
 
 .nav-links a.nav-active { color: var(--accent); font-weight: 600; }
 
-.nav-username { color: var(--ink-soft); font-weight: 500; }
-
 .nav-cta {
     background: var(--ink) !important;
     color: var(--paper) !important;
@@ -717,6 +715,5 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 600px) {
     .nav-links a:not(.nav-cta) { display: none; }
-    .nav-username { display: none; }
     .hero { padding: 3rem 1rem 2rem; }
 }
