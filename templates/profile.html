@@ -24,6 +24,9 @@
                 <p class="profile-user-email">{{ user.email }}</p>
                 <p class="profile-user-meta"><i data-lucide="calendar"></i>Member since {{ user.member_since }}</p>
             </div>
+            <a href="{{ url_for('add_expense') }}" class="profile-add-expense-btn">
+                <i data-lucide="plus"></i>Add Expense
+            </a>
         </div>
     </section>
 
@@ -71,7 +74,6 @@
         <div class="profile-panel">
             <div class="profile-panel-header">
                 <h2 class="profile-section-title"><i data-lucide="receipt"></i>Recent Transactions</h2>
-                <a href="{{ url_for('add_expense') }}" class="btn-primary">Add Expense</a>
             </div>
             <div class="profile-table-wrap">
                 <table class="profile-table">
@@ -95,6 +97,10 @@
                                 <a href="{{ url_for('edit_expense', id=txn.id) }}" class="profile-action-link">
                                     <i data-lucide="pencil"></i>Edit
                                 </a>
+                                <form method="POST" action="{{ url_for('delete_expense', id=txn.id) }}"
+                                      style="display:inline" onsubmit="return confirm('Delete this expense?')">
+                                    <button type="submit" class="btn-delete"><i data-lucide="trash-2"></i>Delete</button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}
