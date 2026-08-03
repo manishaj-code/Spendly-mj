@@ -1,4 +1,5 @@
 import calendar
+import os
 import sqlite3
 from datetime import date, datetime
 
@@ -407,4 +408,5 @@ with app.app_context():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", port=port, debug="PORT" not in os.environ)
