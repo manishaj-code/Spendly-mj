@@ -23,6 +23,8 @@
                 {% if session.get('user_name') %}
                 <span class="nav-username">{{ session.get('user_name') }}</span>
                 {% endif %}
+                <a href="{{ url_for('analytics') }}" class="{{ 'nav-active' if request.endpoint == 'analytics' else '' }}">Analytics</a>
+                <a href="{{ url_for('add_expense') }}" class="{{ 'nav-active' if request.endpoint == 'add_expense' else '' }}">Add Expense</a>
                 <a href="{{ url_for('logout') }}">Logout</a>
                 {% else %}
                 <a href="{{ url_for('login') }}">Sign in</a>
