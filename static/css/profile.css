@@ -172,6 +172,27 @@
 
 .profile-user-meta svg { width: 16px; height: 16px; flex-shrink: 0; }
 
+.profile-add-expense-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.65rem 1.5rem;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.profile-add-expense-btn:hover { background: var(--accent); }
+
+.profile-add-expense-btn svg { width: 16px; height: 16px; }
+
 /* Summary stats row */
 
 .profile-stats {
@@ -229,14 +250,19 @@
     text-align: left;
     color: var(--ink-muted);
     font-weight: 500;
-    padding-bottom: 0.75rem;
+    padding: 0 1rem 0.75rem 0;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
 }
 
+.profile-table thead th:last-child,
+.profile-table tbody td:last-child { padding-right: 0; }
+
 .profile-table tbody td {
-    padding: 0.85rem 0;
+    padding: 0.85rem 1rem 0.85rem 0;
     border-top: 1px solid var(--border-soft);
     color: var(--ink-soft);
+    white-space: nowrap;
 }
 
 .profile-table tbody tr:hover { background: var(--paper-warm); }
@@ -352,6 +378,7 @@
 @media (max-width: 900px) {
     .profile-stats { grid-template-columns: 1fr; }
     .profile-user-card { flex-direction: column; text-align: center; }
+    .profile-add-expense-btn { margin-left: 0; width: 100%; justify-content: center; }
     .profile-panels { grid-template-columns: 1fr; }
 }
 
