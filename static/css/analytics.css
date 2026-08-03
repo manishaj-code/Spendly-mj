@@ -1,0 +1,123 @@
+/* ------------------------------------------------------------------ */
+/* Analytics — Coming Soon                                             */
+/* ------------------------------------------------------------------ */
+
+.analytics-section {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.analytics-card {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2.5rem;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 20px 40px -20px rgba(15, 15, 15, 0.15);
+}
+
+.analytics-blob {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--paper-warm), transparent);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.analytics-blob-top { top: -60px; right: -60px; }
+.analytics-blob-bottom { bottom: -60px; left: -60px; }
+
+.analytics-icon {
+    position: relative;
+    z-index: 1;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    border-radius: var(--radius-md);
+    color: var(--paper);
+}
+
+.analytics-icon i {
+    width: 40px;
+    height: 40px;
+    stroke-width: 1.75;
+}
+
+.analytics-badge {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    background: var(--accent);
+    color: var(--paper);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+}
+
+.analytics-title {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--ink);
+    margin-bottom: 1rem;
+}
+
+.analytics-body {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-body);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    max-width: 380px;
+    margin: 0 auto 1.75rem;
+}
+
+.analytics-dots {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.analytics-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+}
+
+.analytics-caption {
+    position: relative;
+    z-index: 1;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+}
+
+@media (max-width: 600px) {
+    .analytics-section { padding: 3rem 1.25rem; }
+
+    .analytics-card { padding: 2.5rem 1.5rem; }
+
+    .analytics-title { font-size: 1.6rem; }
+}

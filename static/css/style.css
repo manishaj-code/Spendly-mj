@@ -120,6 +120,8 @@ a { color: inherit; text-decoration: none; }
 .nav-links a { color: var(--ink-muted); transition: color 0.2s; }
 .nav-links a:hover { color: var(--ink); }
 
+.nav-links a.nav-active { color: var(--accent); font-weight: 600; }
+
 .nav-username { color: var(--ink-soft); font-weight: 500; }
 
 .nav-cta {
