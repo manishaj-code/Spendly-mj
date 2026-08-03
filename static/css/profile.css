@@ -123,6 +123,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    min-height: 2.6rem;
     margin-bottom: 1.25rem;
 }
 
