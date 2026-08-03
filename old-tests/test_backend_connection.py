@@ -61,7 +61,7 @@ def test_get_recent_transactions_seed_user(seed_user_id):
     assert len(txns) == 8
 
     for t in txns:
-        assert set(t.keys()) == {"date", "description", "category", "amount"}
+        assert set(t.keys()) == {"id", "date", "description", "category", "amount"}
 
     # Newest first: the last-seeded expense (Jul 25, "Restaurant dinner")
     # should come before the first-seeded one (Jul 02, "Groceries").

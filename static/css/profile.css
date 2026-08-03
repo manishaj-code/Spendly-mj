@@ -247,6 +247,22 @@
     color: var(--ink);
 }
 
+.profile-table-action { text-align: right; white-space: nowrap; }
+
+.profile-action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.profile-action-link:hover { text-decoration: underline; }
+
+.profile-action-link svg { width: 14px; height: 14px; }
+
 /* Category badges */
 
 .profile-badge {
