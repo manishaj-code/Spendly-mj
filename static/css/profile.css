@@ -118,6 +118,16 @@
 
 .profile-section-title svg { width: 24px; height: 24px; color: var(--accent); flex-shrink: 0; }
 
+.profile-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.profile-panel-header .profile-section-title { margin-bottom: 0; }
+
 /* User info card */
 
 .profile-user-card {

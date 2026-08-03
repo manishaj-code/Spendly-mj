@@ -69,7 +69,10 @@
     <section class="profile-section profile-panels">
 
         <div class="profile-panel">
-            <h2 class="profile-section-title"><i data-lucide="receipt"></i>Recent Transactions</h2>
+            <div class="profile-panel-header">
+                <h2 class="profile-section-title"><i data-lucide="receipt"></i>Recent Transactions</h2>
+                <a href="{{ url_for('add_expense') }}" class="btn-primary">Add Expense</a>
+            </div>
             <div class="profile-table-wrap">
                 <table class="profile-table">
                     <thead>

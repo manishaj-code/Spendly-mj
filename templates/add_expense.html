@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Add Expense — Spendly{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-container">
+
+        <div class="auth-header">
+            <h1 class="auth-title">Add an expense</h1>
+            <p class="auth-subtitle">Log a new transaction to your account</p>
+        </div>
+
+        <div class="auth-card">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% for category, message in messages %}
+            <div class="auth-{{ 'error' if category == 'error' else 'success' }}">{{ message }}</div>
+            {% endfor %}
+            {% endwith %}
+
+            <form method="post" action="{{ url_for('add_expense') }}">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" name="amount"
+                           class="form-input" step="0.01" min="0.01"
+                           placeholder="0.00" value="{{ form.amount }}" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" class="form-input" required>
+                        <option value="" disabled {{ 'selected' if form.category not in categories else '' }}>Select a category</option>
+                        {% for c in categories %}
+                        <option value="{{ c }}" {{ 'selected' if form.category == c else '' }}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date"
+                           class="form-input" value="{{ form.date }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description (optional)</label>
+                    <input type="text" id="description" name="description"
+                           class="form-input" maxlength="200"
+                           placeholder="e.g. Groceries" value="{{ form.description }}">
+                </div>
+                <button type="submit" class="btn-submit">Save Expense</button>
+            </form>
+        </div>
+
+        <p class="auth-switch">
+            <a href="{{ url_for('profile') }}">Cancel and return to profile</a>
+        </p>
+
+    </div>
+</section>
+
+{% endblock %}
