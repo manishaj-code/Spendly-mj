@@ -81,6 +81,7 @@
                             <th>Description</th>
                             <th>Category</th>
                             <th class="profile-table-amount">Amount</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,6 +91,11 @@
                             <td>{{ txn.description }}</td>
                             <td><span class="profile-badge {{ txn.category_class }}">{{ txn.category }}</span></td>
                             <td class="profile-table-amount">{{ txn.amount }}</td>
+                            <td class="profile-table-action">
+                                <a href="{{ url_for('edit_expense', id=txn.id) }}" class="profile-action-link">
+                                    <i data-lucide="pencil"></i>Edit
+                                </a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
